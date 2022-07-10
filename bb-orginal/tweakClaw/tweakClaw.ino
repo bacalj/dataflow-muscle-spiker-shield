@@ -44,7 +44,9 @@
   int userReleasedButton = 1;                 //flag that is used to avoid multiple button events when user holds button
   
   int currentFunctionality = OPEN_MODE;       //current default position of claw
-  
+
+  String sensorIdentifier = "none_";
+  String outgoingString = "";
 
 
   //-----------------------------------------------------------------------------------
@@ -218,8 +220,11 @@
               oldTime = millis();
               oldDegrees = newDegree;
 
+
+              outgoingString = String(sensorIdentifier + analogReadings);
+              
+
               // seems like the right shape at this point
-              Serial.println(analogReadings);
+              Serial.println(outgoingString);
         }
 }
-
