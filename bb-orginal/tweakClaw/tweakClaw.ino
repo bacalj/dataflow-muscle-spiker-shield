@@ -45,7 +45,7 @@
   
   int currentFunctionality = OPEN_MODE;       //current default position of claw
 
-  String sensorIdentifier = "nonez_";
+  String sensorIdentifier = "none_";
   String outgoingString = "";
 
 
@@ -225,6 +225,6 @@
               
 
               // seems like the right shape at this point
-              Serial.println(outgoingString);
+              // Serial.println(outgoingString);
         }
 }
