@@ -180,7 +180,6 @@
         //
         //    constrain(someReading, Min, Max)
         //    
-        //    constrain(5, 2, 8) -> 5
         //    constrain(1, 2, 8) -> 2
         //    constrain(9, 2, 8) -> 8
         //
@@ -189,7 +188,7 @@
         //
         //    It returns a proportional value: https://www.arduino.cc/reference/en/language/functions/math/map/
         //    
-        //    map(someReading, knownMin, knownMax, toMin, toMax)
+        //    map(someReading, originalMin, orginialMax, newMin, newMax)
         //
         //    map(5, 0, 10, 0, 100) -> 50
 
