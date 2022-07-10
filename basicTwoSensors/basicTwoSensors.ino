@@ -32,7 +32,9 @@
   int lastSensitivitiesIndex = 2;             //set initial sensitivity index
   
   int emgSaturationValue = 0;                 //selected sensitivity/EMG saturation value
-  int analogReadings;                         //measured value for EMG
+  int emgReading;                             //measured value for EMG
+  int fsrReading;                             //measured value for sirface pressure sensor
+  int threshold = 100;                        //threshold voltage for touch detected (modify based on sensor placement)
   byte ledbarHeight = 0;                      //temporary variable for led bar height
   
   unsigned long oldTime = 0;                  //timestamp of last servo angle update (ms)
@@ -45,8 +47,10 @@
   
   int currentFunctionality = OPEN_MODE;       //current default position of claw
 
-  String sensorIdentifier = "nonez_";
-  String outgoingString = "";
+  String emgId = "emgA";
+  String fsrId = "fsrA";
+  String emgStringOut = "";
+  String fsrStringOut = "";
 
 
   //-----------------------------------------------------------------------------------
@@ -154,7 +158,8 @@
 
         //-----------------------------  Measure EMG -----------------------------------------------
     
-        analogReadings = analogRead(A0);                    //read EMG value from analog input A0
+        emgReading = analogRead(A0);                //read EMG value from analog input A0
+        fsrReading = analogRead(A1);                //read Pressure value from analog input A1
         
         //---------------------- Show EMG strength on LED ------------------------------------------
         
@@ -165,8 +170,8 @@
         }
          
         //calculate what LEDs should be turned ON on the LED bar
-        analogReadings= constrain(analogReadings, 30, emgSaturationValue);
-        ledbarHeight = map(analogReadings, 30, emgSaturationValue, 0, NUM_LED);
+        emgReading= constrain(emgReading, 30, emgSaturationValue);
+        ledbarHeight = map(emgReading, 30, emgSaturationValue, 0, NUM_LED);
         
         //turn ON LEDs on the LED bar
         for(int k = 0; k < ledbarHeight; k++)
@@ -202,29 +207,35 @@
               //calculate new angle for servo
               if(currentFunctionality == OPEN_MODE)
               {  
-                analogReadings = constrain(analogReadings, 40, emgSaturationValue);
-                newDegree = map(analogReadings, 40 ,emgSaturationValue, 190, 105); 
+                emgReading = constrain(emgReading, 40, emgSaturationValue);
+                newDegree = map(emgReading, 40 ,emgSaturationValue, 190, 105); 
               }
               else
               {
-                analogReadings = constrain(analogReadings, 120, emgSaturationValue);
-                newDegree = map(analogReadings, 120 ,emgSaturationValue, 105, 190);
+                emgReading = constrain(emgReading, 120, emgSaturationValue);
+                newDegree = map(emgReading, 120 ,emgSaturationValue, 105, 190);
               }
           
               //check if we are in servo dead zone
               if(abs(newDegree-oldDegrees) > GRIPPER_MINIMUM_STEP)
               {
-                 //set new servo angle
-                 Gripper.write(newDegree); 
+                 //set new servo angle if we are not past force threshold
+                if (fsrReading < threshold) {                
+                  Gripper.write(newDegree);
+                }
+  
               }
               oldTime = millis();
+
               oldDegrees = newDegree;
 
 
-              outgoingString = String(sensorIdentifier + analogReadings);
+              emgStringOut = String(emgId + emgReading);
+              fsrStringOut = String(fsrId + fsrReading);
               
 
               // seems like the right shape at this point
-              Serial.println(outgoingString);
+              Serial.println(emgStringOut);
+              Serial.println(fsrStringOut);
         }
 }
