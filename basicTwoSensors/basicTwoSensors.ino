@@ -47,8 +47,8 @@
   
   int currentFunctionality = OPEN_MODE;       //current default position of claw
 
-  String emgId = "emgA";
-  String fsrId = "fsrA";
+  String emgId = "emg";
+  String fsrId = "fsr";
   String emgStringOut = "";
   String fsrStringOut = "";
 
@@ -232,6 +232,9 @@
 
               emgStringOut = String(emgId + emgReading);
               fsrStringOut = String(fsrId + fsrReading);
+
+              // emgStringOut = String(emgReading);
+              // fsrStringOut = String(fsrReading);
               
 
               // seems like the right shape at this point
